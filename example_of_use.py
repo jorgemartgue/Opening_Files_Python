@@ -1,9 +1,4 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Thu Mar 27 22:33:41 2025
 
-@author: jorge
-"""
 
 import os
 import glob
@@ -11,7 +6,6 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy.integrate import simpson
-
 
 def lee_archivos(ruta,patron = '*.*'):
 
@@ -21,11 +15,12 @@ def lee_archivos(ruta,patron = '*.*'):
    
    return archivos
 
-archivos_flujo = lee_archivos('Entregable2_termo','F*.*')
 
-def extraer_archivos(ruta,nombres,patron = '*.*'):
+def extraer_archivos(ruta,patron = '*.*',separ = '\\s+', comentar='%',
+                     nombres = None):
+    
     '''
-    Esta función extrae los archivos de un directorio dado
+    Esta función extrae los archivos de texto de un directorio dado
     
         Inputs:
             
@@ -33,12 +28,21 @@ def extraer_archivos(ruta,nombres,patron = '*.*'):
                   si los archivos se guardan en la misma carpeta que el 
                   programa usar ''.
                   
-            nombres: nombres de los datos almacenados en las variables
-            
             patrón: te permite diferenciar de archivos que tengas en el mismo
                     directorio. Por ejemplo 'p*.*' te extraería los archivos
                     que empiecen por p. Por defecto esta variable está fijada
                     a '*.*' que quiere decir que extraiga todos los archivos.
+                
+            separ: La separación que utiliza tu archivo de texto está puesto 
+                 como espacios en blanco.
+                 
+            comentar: Como están marcados los comentarios en tu archivo de 
+                     texto por defecto está marcado como %.
+                        
+            nombres: Los nombres de las columnas, hay que ponerlos como 
+                   ['Tiempo', 'flujo'] por ejemplo. Por defecto está puesto 
+                   como ninguno.
+                
                 
         Outputs: 
             
@@ -58,21 +62,18 @@ def extraer_archivos(ruta,nombres,patron = '*.*'):
         
             nombre = os.path.basename(ruta_comp)
             
-            #Esta linea habría que modificarla en función de los archivos que 
-            #tengas que abrir.
-            df =  pd.read_csv(ruta_comp,sep ='\\s+' ,comment='%',
-                              names=[nombres[0],nombres[1]],
-                              dtype={nombres[0]: np.float64, 
-                                     nombres[1]: np.float64})
-            print(df.dtypes)
+            df =  pd.read_csv(ruta_comp,sep = separ ,comment=comentar,
+                              names=nombres)
+            
             archivo_ext[nombre] = df
             
     return archivo_ext
 
 
-datos_flujo = extraer_archivos('Entregable2_termo',['Tiempo','Flujos'],'F*.*')
-datos_temp = extraer_archivos('Entregable2_termo',['Tiempo','Temperaturas'],
-                              'T*.*')
+datos_flujo = extraer_archivos('Entregable2_termo','F*.*', 
+                               nombres= ['Tiempo', 'Flujos'])
+datos_temp = extraer_archivos('Entregable2_termo','T*.*', 
+                              nombres= ['Tiempo','Temperaturas'])
 
 
 
