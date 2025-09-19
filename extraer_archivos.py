@@ -18,9 +18,11 @@ def lee_archivos(ruta,patron = '*.*'):
    return archivos
 
 
-def extraer_archivos(ruta,patron = '*.*'):
+def extraer_archivos(ruta,patron = '*.*',separ = '\\s+', comentar='%',
+                     nombres = None):
+    
     '''
-    Esta función extrae los archivos de un directorio dado
+    Esta función extrae los archivos de texto de un directorio dado
     
         Inputs:
             
@@ -32,6 +34,17 @@ def extraer_archivos(ruta,patron = '*.*'):
                     directorio. Por ejemplo 'p*.*' te extraería los archivos
                     que empiecen por p. Por defecto esta variable está fijada
                     a '*.*' que quiere decir que extraiga todos los archivos.
+                
+            separ: La separación que utiliza tu archivo de texto está puesto 
+                 como espacios en blanco.
+                 
+            comentar: Como están marcados los comentarios en tu archivo de 
+                     texto por defecto está marcado como %.
+                        
+            nombres: Los nombres de las columnas, hay que ponerlos como 
+                   ['Tiempo', 'flujo'] por ejemplo. Por defecto está puesto 
+                   como ninguno.
+                
                 
         Outputs: 
             
@@ -51,11 +64,10 @@ def extraer_archivos(ruta,patron = '*.*'):
         
             nombre = os.path.basename(ruta_comp)
             
-            #Esta linea habría que modificarla en función de los archivos que 
-            #tengas que abrir.
-            df =  pd.read_csv(ruta_comp,sep ='\\s+' ,comment='%',
-                              names=['Tiempo','Flujo'])
+           df =  pd.read_csv(ruta_comp,sep = separ ,comment=comentar,
+                              names=nombres)
             
             archivo_ext[nombre] = df
             
     return archivo_ext
+
